@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
+	<sec:authorize access="isAuthenticated()">
+		<fmt:setLocale value="tr" scope="session" />
+		<div id="slider-holder">
+			<c:if test="${not empty photoList}">
+				<div class="flexslider home-slider">
+					<ul class="slides">
+						<c:forEach items="${photoList}" var="photo">
+							<li><img src="data:image/jpeg; base64, ${photoMap[photo]}"
+								align="center"
+								style="min-height: 412px; text-align: center; margin: 0 auto;" />
+								<p class="flex-caption">${photo.ownerUserBase.name}
+									${photo.ownerUserBase.surname} |
+									<fmt:formatDate value="${photo.dateAdded}" timeStyle="SHORT"
+										type="BOTH" />
+									| <a href="javascript:void(0);" class="deletePhotoButton"
+										data-idvalue="${photo.id}">sil</a>
+								</p></li>
+						</c:forEach>
+					</ul>
+				</div>
+			</c:if>
+			<div id="headline">
+				<h2 class="heading">mekan bilgileri</h2>
+				<form:form modelAttribute="photoForm" id="contactForm" method="post"
+					enctype="multipart/form-data">
+					<fieldset>
+						<div>
+							<input type="file" class="filestyle" data-input="false"
+								name="file" data-buttonText="dosya seç"
+								accept="image/x-png, image/gif, image/jpeg, image/png, image/jpg" />
+						</div>
+						<p>
+							<input type="submit" value="kaydet" name="submit" id="submit"
+								style="float: right;" />
+						</p>
+					</fieldset>
+				</form:form>
+				<em id="corner"></em>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document)
+					.ready(
+							function() {
+								$('#contactForm').tooltipster({
+									trigger : 'custom',
+									onlyOne : false,
+									position : 'right'
+								});
+								$('#contactForm')
+										.on(
+												'submit',
+												function(event) {
+													var validator = $(
+															"#contactForm")
+															.validate(
+																	{
+																		rules : {
+																			file : {
+																				required : true
+																			}
+																		},
+																		messages : {
+																			file : {
+																				required : "dosya seçilmeli"
+																			}
+																		},
+																		errorPlacement : function(
+																				error,
+																				element) {
+																			$(
+																					'#contactForm')
+																					.tooltipster(
+																							'update',
+																							$(
+																									error)
+																									.text());
+																			$(
+																					'#contactForm')
+																					.tooltipster(
+																							'show');
+																		},
+																		success : function(
+																				label,
+																				element) {
+																			$(
+																					'#contactForm')
+																					.tooltipster(
+																							'hide');
+																		}
+																	});
+													if (validator.form()) {
+														$('form#contactForm')
+																.attr(
+																		{
+																			action : '${pageContext.request.contextPath}/hesabim/mekan/fotograf/${place.id}'
+																		});
+														return true;
+													}
+													return false;
+												});
+								$('.deletePhotoButton')
+										.on(
+												'click',
+												function(event) {
+													var id = $(this).data(
+															'idvalue');
+													$
+															.ajax({
+																type : "POST",
+																url : '${pageContext.request.contextPath}/hesabim/mekan/fotograf/sil',
+																data : {
+																	photoId : id,
+																	placeId : '${place.id}'
+																},
+																dataType : 'json',
+																beforeSend : function(
+																		jqXHR,
+																		settings) {
+																	$(
+																			"#loading-div")
+																			.show();
+																},
+																success : function(
+																		data,
+																		textStatus,
+																		jqXHR) {
+																	if (data.codeConstant === 'SUCCESS') {
+																		$(
+																				'.modal-title')
+																				.html(
+																						'');
+																		$(
+																				'.modal-body')
+																				.html(
+																						'resim silindi');
+																		$(
+																				'#myModal')
+																				.modal(
+																						'show');
+																	} else {
+																		$(
+																				'.modal-title')
+																				.html(
+																						'hata');
+																		$(
+																				'.modal-body')
+																				.html(
+																						data.message);
+																		$(
+																				'#myModal')
+																				.modal(
+																						'show');
+
+																	}
+																},
+																error : function(
+																		jqXHR,
+																		textStatus,
+																		errorThrown) {
+																	$(
+																			'.modal-title')
+																			.html(
+																					'');
+																	$(
+																			'.modal-body')
+																			.html(
+																					textStatus);
+																	$(
+																			'#myModal')
+																			.modal(
+																					'show');
+																},
+																complete : function(
+																		jqXHR,
+																		textStatus) {
+																	$(
+																			"#loading-div")
+																			.hide();
+																	$(
+																			'#deleteModal')
+																			.modal(
+																					'hide');
+																	$(
+																			'#dismissButton')
+																			.on(
+																					'click',
+																					function(
+																							event) {
+																						window.location.href = '${pageContext.request.contextPath}/hesabim/mekan/fotograf/${place.id}'
+																					});
+																}
+															});
+												});
+							});
+		</script>
+	</sec:authorize>
+</div>

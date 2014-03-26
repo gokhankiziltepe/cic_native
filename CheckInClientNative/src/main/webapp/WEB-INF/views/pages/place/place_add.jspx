@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:form="http://www.springframework.org/tags/form" version="2.0">
+	<sec:authorize access="isAuthenticated()">
+		<div id="slider-holder">
+			<div id="posts-list" style="width: 500px;">
+				<h2 class="page-heading">
+					<span>lokasyonu seç</span>
+				</h2>
+				<fieldset class="gllpLatlonPicker" style="margin-bottom: 10px;">
+					<div class="gllpMap">Google Maps</div>
+					<input type="hidden" class="gllpLatitude" value="41.04259173386697" />
+					<input type="hidden" class="gllpLongitude"
+						value="28.982620239257812" /> <input type="hidden"
+						class="gllpZoom" value="11" />
+				</fieldset>
+				<p>adres metnini aynı zamanda kayıt formundan
+					değiştirebilirsiniz.</p>
+			</div>
+			<div id="headline">
+				<h2 class="heading">mekan bilgileri</h2>
+				<form:form modelAttribute="placeForm" id="contactForm" method="post">
+					<fieldset>
+						<div>
+							<form:input path="latitudeText" name="latitudeText"
+								id="latitudeText" type="hidden" placeholder="enlem"
+								readonly="true" />
+						</div>
+						<div>
+							<form:input path="longitudeText" name="longitudeText"
+								id="longitudeText" type="hidden" placeholder="boylam"
+								readonly="true" />
+						</div>
+						<div>
+							<form:input path="nameText" name="nameText" id="nameText"
+								cssStyle="margin-bottom:10px;" type="text"
+								placeholder="mekan adı" />
+						</div>
+						<div>
+							<form:textarea path="descriptionText" name="descriptionText"
+								id="descriptionText" type="textarea"
+								cssStyle="width:200px; height:100px; resize:none"
+								placeholder="mekan açıklaması" maxlength="1000" />
+						</div>
+						<div>
+							<form:textarea path="addressText" name="addressText"
+								cssStyle="width:200px; height:100px; resize:none"
+								id="addressText" type="textarea" placeholder="adres"
+								maxlength="1000" />
+						</div>
+						<div>
+							<form:input path="capacityText" name="capacityText"
+								id="capacityText" type="text" placeholder="kapasite" />
+						</div>
+						<p>
+							<input type="submit" value="kaydet" name="submit" id="submit"
+								style="float: left;" />
+						</p>
+					</fieldset>
+				</form:form>
+				<em id="corner"></em>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var zoom = 11;
+			$(document)
+					.ready(
+							function() {
+								$('#latitudeText')
+										.val($('.gllpLatitude').val());
+								$('#longitudeText').val(
+										$('.gllpLongitude').val());
+								getAddress($('#latitudeText').val(), $(
+										'#longitudeText').val());
+								$('#contactForm input, textarea').tooltipster({
+									trigger : 'custom',
+									onlyOne : false,
+									position : 'right'
+								});
+								$('#contactForm')
+										.on(
+												'submit',
+												function(event) {
+													var validator = $(
+															"#contactForm")
+															.validate(
+																	{
+																		rules : {
+																			nameText : {
+																				required : true,
+																				minlength : 2,
+																				maxlength : 100
+																			},
+																			addressText : {
+																				required : true,
+																				minlength : 10,
+																				maxlength : 1000
+																			},
+																			descriptionText : {
+																				maxlength : 500
+																			},
+																			capacityText : {
+																				digits : true,
+																				maxlength : 5
+																			}
+																		},
+																		messages : {
+																			nameText : {
+																				required : "mekan adı girilmeli",
+																				minlength : "mekan adı kısa girildi",
+																				maxlength : "mekan adı uzun girildi"
+																			},
+																			addressText : {
+																				required : "mekan adresi girilmeli",
+																				minlength : "mekan adresi kısa girildi",
+																				maxlength : "mekan adresi uzun girildi"
+																			},
+																			descriptionText : {
+																				maxlength : "mekan açıklaması uzun girildi"
+																			},
+																			capacityText : {
+																				digits : "kapasite tamsayı olmalı",
+																				maxlength : "mekan kapasitesi uzun girildi"
+																			}
+																		},
+																		errorPlacement : function(
+																				error,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'update',
+																							$(
+																									error)
+																									.text());
+																			$(
+																					element)
+																					.tooltipster(
+																							'show');
+																		},
+																		success : function(
+																				label,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'hide');
+																		}
+																	});
+													if (validator.form()) {
+														$('form#contactForm')
+																.attr(
+																		{
+																			action : '${pageContext.request.contextPath}/hesabim/mekan/ekle'
+																		});
+														return true;
+													}
+													return false;
+												});
+							});
+			$(document).on(
+					"location_changed",
+					function(event, object) {
+						if (zoom != $('.gllpZoom').val()) {
+							zoom = $('.gllpZoom').val();
+						} else {
+							$('#latitudeText').val($('.gllpLatitude').val());
+							$('#longitudeText').val($('.gllpLongitude').val());
+							getAddress($('#latitudeText').val(), $(
+									'#longitudeText').val());
+						}
+					});
+
+			function getAddress(latitude, longitude) {
+
+				$.ajax({
+					type : "GET",
+					url : 'http://maps.googleapis.com/maps/api/geocode/json',
+					data : {
+						latlng : latitude + ", " + longitude,
+						sensor : true
+					},
+					dataType : 'json',
+					beforeSend : function(jqXHR, settings) {
+						$("#loading-div").show();
+					},
+					success : function(data, textStatus, jqXHR) {
+						if (data.status === 'OK') {
+							$('#addressText').val(
+									data.results[0].formatted_address);
+						} else {
+							$('#addressText').val('');
+						}
+					},
+					error : function(jqXHR, textStatus, errorThrown) {
+						$('#addressText').val('');
+					},
+					complete : function(jqXHR, textStatus) {
+						$("#loading-div").hide();
+					}
+				});
+			}
+		</script>
+	</sec:authorize>
+</div>

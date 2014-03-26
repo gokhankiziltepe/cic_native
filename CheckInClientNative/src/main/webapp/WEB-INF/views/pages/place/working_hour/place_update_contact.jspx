@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
+	<sec:authorize access="isAuthenticated()">
+		<div id="slider-holder">
+			<div id="posts-list" style="width: 940px;">
+				<h2 class="page-heading">
+					<span>iletişim bilgileri</span>
+				</h2>
+				<c:if test="${not empty phoneList}">
+					<table id="box-table-a">
+						<thead>
+							<tr>
+								<th scope="col">Numara</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${phoneList}" var="phone">
+								<tr>
+									<td>${phone.phoneText}</td>
+									<td><a href="javascript:void(0);"
+										data-idvalue="${phone.id}" class="delete-phone">sil</a></td>
+									<td><a
+										href="${pageContext.request.contextPath}/hesabim/mekan/guncelle/iletisim/${place.id}/${phone.id}"
+										class="update-phone">güncelle</a></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:if>
+			</div>
+			<form:form modelAttribute="phoneForm" id="contactForm" method="put"
+				cssClass="phoneForm" cssStyle="margin-top: 10px;">
+				<fieldset>
+					<div>
+						<form:input path="phoneText" name="phoneText" id="phoneText"
+							type="text" placeholder="numara: (xxx-xxx-xxxx)" />
+					</div>
+					<p>
+						<input type="submit" value="kaydol" name="submit" id="submit"
+							style="float: left;" />
+					</p>
+				</fieldset>
+			</form:form>
+		</div>
+
+		<div id="slider-holder">
+			<div id="posts-list" style="width: 940px; margin-top: 20px;">
+				<h2 class="page-heading">
+					<span>çalışma saatleri</span>
+				</h2>
+				<c:if test="${not empty workingHourList}">
+					<table id="box-table-a">
+						<thead>
+							<tr>
+								<th scope="col">gün</th>
+								<th scope="col">açılış saati</th>
+								<th scope="col">kapanış saati</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${workingHourList}" var="workingHour">
+								<tr>
+									<td>${dayMap[workingHour.day]}</td>
+									<td><fmt:formatDate value="${workingHour.startTime}"
+											pattern="HH:mm" /></td>
+									<td><fmt:formatDate value="${workingHour.endTime}"
+											pattern="HH:mm" /></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:if>
+				<form:form modelAttribute="workingHourForm" id="contactForm"
+					cssClass="workingHourForm" cssStyle="margin-top: 10px;"
+					method="post">
+					<fieldset>
+						<div>
+							<form:select path="dayText">
+								<form:option value="">--gün seçin--</form:option>
+								<form:options items="${dayMap}"></form:options>
+							</form:select>
+							<br />
+							<form:select path="openingHour">
+								<form:option value="">--açılış saati seçin--</form:option>
+								<form:options items="${hourMap}"></form:options>
+							</form:select>
+							<br />
+							<form:select path="closingHour">
+								<form:option value="">--kapanış saati seçin--</form:option>
+								<form:options items="${hourMap}"></form:options>
+							</form:select>
+						</div>
+						<p>
+							<input type="submit" value="kaydol" name="submit" id="submit"
+								style="float: left;" />
+						</p>
+					</fieldset>
+				</form:form>
+			</div>
+
+		</div>
+
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true"></button>
+						<h4 class="modal-title"></h4>
+					</div>
+					<div class="modal-body">...</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">vazgeç</button>
+						<button type="button" class="btn btn-default" id="deleteButton">sil</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document)
+					.ready(
+							function() {
+								$('#phoneText').mask("999-999-9999");
+								$('.phoneForm input, .workingHourForm select')
+										.tooltipster({
+											trigger : 'custom',
+											onlyOne : false,
+											position : 'right'
+										});
+								$.validator.addMethod("regex", function(value,
+										element, regexp) {
+									var check = false;
+									var re = new RegExp(regexp);
+									return this.optional(element)
+											|| re.test(value);
+								}, "telefon numarası formatı hatalı");
+								$('.phoneForm')
+										.on(
+												'submit',
+												function(event) {
+													var validator = $(
+															".phoneForm")
+															.validate(
+																	{
+																		rules : {
+																			phoneText : {
+																				required : true,
+																				minlength : 12,
+																				maxlength : 20,
+																				regex : /^[2-9]\d{2}-\d{3}-\d{4}$/
+																			}
+																		},
+																		messages : {
+																			phoneText : {
+																				required : "telefon numarası girilmeli",
+																				minlength : "telefon numarası kısa girildi",
+																				maxlength : "telefon numarası uzun girildi",
+																				regex : "telefon numarası formatı hatalı"
+																			}
+																		},
+																		errorPlacement : function(
+																				error,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'update',
+																							$(
+																									error)
+																									.text());
+																			$(
+																					element)
+																					.tooltipster(
+																							'show');
+																		},
+																		success : function(
+																				label,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'hide');
+																		}
+																	});
+													if (validator.form()) {
+														$('form.phoneForm')
+																.attr(
+																		{
+																			action : '${pageContext.request.contextPath}/hesabim/mekan/guncelle/iletisim/${place.id}'
+																		});
+														return true;
+													}
+													return false;
+												});
+
+								$('.workingHourForm')
+										.on(
+												'submit',
+												function(event) {
+													var validator = $(
+															".workingHourForm")
+															.validate(
+																	{
+																		rules : {
+																			dayText : {
+																				required : true
+																			},
+																			openingHour : {
+																				required : true
+																			},
+																			closingHour : {
+																				required : true
+																			}
+																		},
+																		messages : {
+																			dayText : {
+																				required : "gün seçilmeli"
+																			},
+																			openingHour : {
+																				required : "açılış saati seçilmeli"
+																			},
+																			closingHour : {
+																				required : "kapanış saati seçilmeli"
+																			}
+																		},
+																		errorPlacement : function(
+																				error,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'update',
+																							$(
+																									error)
+																									.text());
+																			$(
+																					element)
+																					.tooltipster(
+																							'show');
+																		},
+																		success : function(
+																				label,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'hide');
+																		}
+																	});
+													if (validator.form()) {
+														$(
+																'form.workingHourForm')
+																.attr(
+																		{
+																			action : '${pageContext.request.contextPath}/hesabim/mekan/guncelle/iletisim/${place.id}'
+																		});
+														return true;
+													}
+													return false;
+												});
+								$('.delete-phone')
+										.on(
+												'click',
+												function(event) {
+													$('.modal-body')
+															.html(
+																	'telefon numarasını silmek istediğinize emin misiniz?');
+													$('#deleteModal').modal(
+															'show');
+													var id = $(this).data(
+															'idvalue');
+													$('#deleteButton')
+															.on(
+																	'click',
+																	function(
+																			event) {
+																		$
+																				.ajax({
+																					type : "POST",
+																					url : '${pageContext.request.contextPath}/hesabim/mekan/iletisim/sil',
+																					data : {
+																						phoneId : id,
+																						placeId : '${place.id}'
+																					},
+																					dataType : 'json',
+																					beforeSend : function(
+																							jqXHR,
+																							settings) {
+																						$(
+																								"#loading-div")
+																								.show();
+																					},
+																					success : function(
+																							data,
+																							textStatus,
+																							jqXHR) {
+
+																						if (data.codeConstant === 'SUCCESS') {
+																							$(
+																									'.modal-title')
+																									.html(
+																											'');
+																							$(
+																									'.modal-body')
+																									.html(
+																											'telefon numarası silindi');
+																							$(
+																									'#myModal')
+																									.modal(
+																											'show');
+																						} else {
+																							$(
+																									'.modal-title')
+																									.html(
+																											'hata');
+																							$(
+																									'.modal-body')
+																									.html(
+																											data.message);
+																							$(
+																									'#myModal')
+																									.modal(
+																											'show');
+
+																						}
+																					},
+																					error : function(
+																							jqXHR,
+																							textStatus,
+																							errorThrown) {
+																						$(
+																								'.modal-title')
+																								.html(
+																										'');
+																						$(
+																								'.modal-body')
+																								.html(
+																										textStatus);
+																						$(
+																								'#myModal')
+																								.modal(
+																										'show');
+																					},
+																					complete : function(
+																							jqXHR,
+																							textStatus) {
+																						$(
+																								"#loading-div")
+																								.hide();
+																						$(
+																								'#deleteModal')
+																								.modal(
+																										'hide');
+																						$(
+																								'#dismissButton')
+																								.on(
+																										'click',
+																										function(
+																												event) {
+																											window.location.href = '${pageContext.request.contextPath}/hesabim/mekan/guncelle/iletisim/${place.id}'
+																										});
+																					}
+																				});
+																	});
+												});
+							});
+		</script>
+	</sec:authorize>
+</div>

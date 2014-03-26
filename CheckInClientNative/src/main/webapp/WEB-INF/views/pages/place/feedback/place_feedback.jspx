@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
+	<sec:authorize access="isAuthenticated()">
+		<fmt:setLocale value="tr" scope="session" />
+		<c:if test="${not empty likeList}">
+			<div id="slider-holder">
+				<div id="posts-list" style="width: 940px;">
+					<h2 class="page-heading">
+						<span>beğeniler</span>
+					</h2>
+
+					<table id="box-table-a" style="margin-bottom: 40px;">
+						<thead>
+							<tr>
+								<th scope="col">isim</th>
+								<th scope="col">beğeni notu</th>
+								<th scope="col">tarih</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${likeList}" var="like">
+								<tr>
+									<td>${like.userIndividual.userBase.name}
+										${like.userIndividual.userBase.surname}</td>
+									<td><img align="center"
+										src="${pageContext.request.contextPath}/resources/images/icons/${like.isLike ? 'like' :  'dislike'}.png"
+										alt="${like.isLike ? 'like' :  'dislike'}" /></td>
+
+									<td><fmt:formatDate value="${like.dateAdded}"
+											timeStyle="SHORT" type="BOTH" /></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</c:if>
+		<c:if test="${not empty commentList}">
+			<div id="slider-holder">
+				<div id="posts-list" style="width: 940px;">
+					<h2 class="page-heading">
+						<span>yorumlar</span>
+					</h2>
+
+					<table id="box-table-a" style="margin-bottom: 40px;">
+						<thead>
+							<tr>
+								<th scope="col">isim</th>
+								<th scope="col">yorum</th>
+								<th scope="col">tarih</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${commentList}" var="comment">
+								<tr>
+									<td>${comment.commentedByUserBase.name}
+										${comment.commentedByUserBase.surname}</td>
+									<td title="${comment.commentText}">${fn:length(comment.commentText) > 20 ? fn:substring(comment.commentText, 0, 20) : comment.commentText}${fn:length(comment.commentText) > 20 ? '...' : ''}</td>
+									<td><fmt:formatDate value="${comment.dateAdded}"
+											timeStyle="SHORT" type="BOTH" /></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</c:if>
+		<c:if test="${not empty feedbackList}">
+			<div id="slider-holder">
+				<div id="posts-list" style="width: 940px;">
+					<h2 class="page-heading">
+						<span>geri dönüşler</span>
+					</h2>
+
+					<table id="box-table-a" style="margin-bottom: 40px;">
+						<thead>
+							<tr>
+								<th scope="col">isim</th>
+								<th scope="col">ambiyans</th>
+								<th scope="col">servis</th>
+								<th scope="col">lezzet</th>
+								<th scope="col">fiyat</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${feedbackList}" var="feedback">
+								<tr>
+									<td>${feedback.userIndividual.userBase.name}
+										${feedback.userIndividual.userBase.surname}</td>
+									<td>${feedback.ambiance}</td>
+									<td>${feedback.service}</td>
+									<td>${feedback.flavour}</td>
+									<td>${feedback.price}</td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+		</c:if>
+		<c:if test="${not empty followList}">
+			<div id="slider-holder">
+				<div id="posts-list" style="width: 940px;">
+					<h2 class="page-heading">
+						<span>takipçiler</span>
+					</h2>
+
+					<table id="box-table-a" style="margin-bottom: 40px;">
+						<thead>
+							<tr>
+								<th scope="col">isim</th>
+								<th scope="col">tarih</th>
+								<th scope="col">onay</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${followList}" var="follow">
+								<tr>
+									<td>${follow.followerUserIndividual.userBase.name}
+										${follow.followerUserIndividual.userBase.surname}</td>
+									<td><fmt:formatDate value="${follow.dateAdded}"
+											timeStyle="SHORT" type="BOTH" /></td>
+									<c:if test="${follow.approved}">
+										<td>onaylandı</td>
+									</c:if>
+									<c:if test="${not follow.approved}">
+										<td><a href="javascript:void(0);"
+											class="followApproveButton" data-idvalue="${follow.id}">onayla</a></td>
+									</c:if>
+
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</c:if>
+		<script type="text/javascript">
+			$('.followApproveButton')
+					.on(
+							'click',
+							function(event) {
+								var id = $(this).data('idvalue');
+								$
+										.ajax({
+											type : "POST",
+											url : '${pageContext.request.contextPath}/hesabim/mekan/takipci-onayla',
+											data : {
+												placeId : '${place.id}',
+												followId : id
+											},
+											dataType : 'json',
+											beforeSend : function(jqXHR,
+													settings) {
+												$("#loading-div").show();
+											},
+											success : function(data,
+													textStatus, jqXHR) {
+												if (data.codeConstant === 'SUCCESS') {
+													$('.modal-title').html('');
+													$('.modal-body')
+															.html(
+																	'takipçi onaylandı');
+													$('#myModal').modal('show');
+												} else {
+													$('.modal-title').html(
+															'hata');
+													$('.modal-body').html(
+															data.message);
+													$('#myModal').modal('show');
+
+												}
+											},
+											error : function(jqXHR, textStatus,
+													errorThrown) {
+												$('.modal-title').html('');
+												$('.modal-body').html(
+														textStatus);
+												$('#myModal').modal('show');
+											},
+											complete : function(jqXHR,
+													textStatus) {
+												$("#loading-div").hide();
+												$('#deleteModal').modal('hide');
+												$('#dismissButton')
+														.on(
+																'click',
+																function(event) {
+																	window.location.href = '${pageContext.request.contextPath}/hesabim/mekan/geri-donusler/${place.id}'
+																});
+											}
+										});
+							});
+		</script>
+	</sec:authorize>
+</div>

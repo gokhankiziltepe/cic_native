@@ -1,0 +1,191 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles"
+	xmlns:spring="http://www.springframework.org/tags">
+
+<jsp:output doctype-root-element="HTML"
+	doctype-system="about:legacy-compat" />
+
+<jsp:directive.page contentType="text/html;charset=UTF-8" />
+<jsp:directive.page pageEncoding="UTF-8" />
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=8" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>aracı</title>
+<link rel="icon"
+	href="${pageContext.request.contextPath}/resources/images/favicon.ico"
+	type="image/x-icon" />
+<link rel="shortcut icon" href="resources/images/favicon.ico"
+	type="image/x-icon" />
+
+
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js">
+	<jsp:text/>
+</script>
+
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false">
+	<jsp:text/>
+</script>
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/location-picker.js">
+	<jsp:text/>
+</script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/scripts/jquery.validate.min.js">
+	<jsp:text/>
+</script>
+
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/styles/tooltipster.css"
+	media="all" />
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/scripts/jquery.tooltipster.min.js">
+	<jsp:text/>
+</script>
+
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/scripts/bootstrap/css/bootstrap-responsive.min.css"
+	media="all" />
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/scripts/bootstrap/css/bootstrap.min.css"
+	media="all" />
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/scripts/bootstrap/js/bootstrap.min.js">
+	<jsp:text/>
+</script>
+
+
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/jquery.masked.js">
+	<jsp:text/>
+</script>
+
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/css3-mediaqueries.js">
+	<jsp:text/>
+</script>
+
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/custom.js">
+	<jsp:text/>
+</script>
+
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/tabs.js">
+	<jsp:text/>
+</script>
+
+<link rel="stylesheet" media="screen"
+	href="${pageContext.request.contextPath}/resources/styles/superfish.css" />
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/superfish-1.4.8/js/hoverIntent.js">
+	<jsp:text/>
+</script>
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/superfish-1.4.8/js/superfish.js">
+	<jsp:text/>
+</script>
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/superfish-1.4.8/js/supersubs.js">
+	<jsp:text/>
+</script>
+
+<link rel="stylesheet" media="screen"
+	href="${pageContext.request.contextPath}/resources/scripts/bootstrap/datetimepicker/css/bootstrap-datetimepicker.min.css" />
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/bootstrap/datetimepicker/js/bootstrap-datetimepicker.min.js">
+	<jsp:text/>
+</script>
+
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/prettyPhoto/js/jquery.prettyPhoto.js">
+	<jsp:text/>
+</script>
+
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/scripts/prettyPhoto/css/prettyPhoto.css"
+	media="screen" />
+
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/styles/flexslider.css" />
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/jquery.flexslider-min.js">
+	<jsp:text/>
+</script>
+
+<link rel="stylesheet" media="all"
+	href="${pageContext.request.contextPath}/resources/styles/lessframework.css" />
+
+<script
+	src="${pageContext.request.contextPath}/resources/scripts/modernizr.js">
+	<jsp:text/>
+</script>
+
+
+<link rel="stylesheet" media="all"
+	href="${pageContext.request.contextPath}/resources/styles/skin.css" />
+<link rel="stylesheet" media="all"
+	href="${pageContext.request.contextPath}/resources/styles/style.css" />
+<link rel="stylesheet" media="all"
+	href="${pageContext.request.contextPath}/resources/styles/comments.css" />
+<c:set var="userLocale">
+	<c:set var="plocale">${pageContext.response.locale}</c:set>
+	<c:out value="${fn:replace(plocale, '_', '-')}" default="en" />
+</c:set>
+
+</head>
+
+<body>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">hata</h4>
+				</div>
+				<div class="modal-body">..</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						id="dismissButton">tamam</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="loading-div" style="display: none;">
+		<img
+			src="${pageContext.request.contextPath}/resources/images/ajax-loader.gif"
+			class="ajax-loader" />
+	</div>
+	<tiles:insertAttribute name="header" ignore="true" />
+	<div id="main">
+		<div class="wrapper clearfix">
+			<tiles:insertAttribute name="content" />
+		</div>
+	</div>
+	<tiles:insertAttribute name="footer" ignore="true" />
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			if ('${isError}' === 'true') {
+				$('#myModal').modal('toggle');
+				$('.modal-body').html('${errorMessage}');
+				$('.modal-title').html('hata');
+			}
+			if ('${isSuccess}' === 'true') {
+				$('#myModal').modal('toggle');
+				$('.modal-body').html('${successMessage}');
+				$('.modal-title').html('');
+			}
+		});
+	</script>
+	<script type="text/javascript"
+		src="${pageContext.request.contextPath}/resources/scripts/bootstrap/js/input.min.js">
+		<jsp:text/>
+	</script>
+</body>
+</html>

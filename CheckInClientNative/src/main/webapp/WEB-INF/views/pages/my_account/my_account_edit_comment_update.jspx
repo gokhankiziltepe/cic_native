@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:form="http://www.springframework.org/tags/form" version="2.0">
+	<sec:authorize access="isAuthenticated()">
+		<div class="wrapper clearfix">
+			<div id="posts-list">
+				<div class="home-block">
+					<div class="one-fourth-thumbs">
+						<h2 class="page-heading">
+							<span>yorumu güncelle</span>
+						</h2>
+						<form:form modelAttribute="commentForm" id="contactForm"
+							method="post">
+							<fieldset>
+								<div>
+									<form:textarea path="commentText" name="commentText"
+										id="commentText" type="textarea" placeholder="yorum"
+										maxlength="1000" cssStyle="resize: none" />
+								</div>
+								<p>
+									<input type="submit" value="güncelle" name="submit" id="submit"
+										style="float: left;" />
+								</p>
+							</fieldset>
+						</form:form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(document)
+					.ready(
+							function() {
+								$('#contactForm input, textarea').tooltipster({
+									trigger : 'custom',
+									onlyOne : false,
+									position : 'right'
+								});
+								$('#contactForm')
+										.on(
+												'submit',
+												function(event) {
+
+													var validator = $(
+															"#contactForm")
+															.validate(
+																	{
+																		rules : {
+																			commentText : {
+																				required : true,
+																				maxlength : 1000,
+																			}
+																		},
+																		messages : {
+																			commentText : {
+																				required : "yorum girilmeli",
+																				maxlength : "yorum uzun girildi"
+																			}
+																		},
+																		errorPlacement : function(
+																				error,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'update',
+																							$(
+																									error)
+																									.text());
+																			$(
+																					element)
+																					.tooltipster(
+																							'show');
+																		},
+																		success : function(
+																				label,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'hide');
+																		}
+																	});
+													if (validator.form()) {
+														$('form#contactForm')
+																.attr(
+																		{
+																			action : '${pageContext.request.contextPath}/hesabim/kisisel/yorum/${commentId}'
+																		});
+														return true;
+													}
+													return false;
+												});
+								$('#dismissButton')
+										.on(
+												'click',
+												function(event) {
+													window.location.href = '${pageContext.request.contextPath}/hesabim/kisisel/yorum';
+												});
+							});
+		</script>
+	</sec:authorize>
+</div>

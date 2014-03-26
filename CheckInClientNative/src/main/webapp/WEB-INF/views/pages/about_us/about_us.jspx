@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags" version="2.0">
+	<div class="home-block">
+		<h2 class="home-block-heading">
+			<span>hakkımızda</span>
+		</h2>
+		<aside id="contact-sidebar" class="left contact-sidebar-left">
+			<div class="block">
+				<h4>gökhan kızıltepe</h4>
+				<p>
+					<b>lisans:</b> istanbul teknik üniversitesi (2008-...) <BR /> <b>iş:</b>
+					obss (2013-...)
+				</p>
+				<p></p>
+				<ul class="address-block">
+					<li class="phone">+90 212 553 6897</li>
+					<li class="mobile">+90 506 830 0133</li>
+					<li class="email"><a href="mailto:kiziltepe.gokhan@yahoo.com">kiziltepe.gokhan@yahoo.com</a></li>
+				</ul>
+
+			</div>
+		</aside>
+		<aside id="contact-sidebar" class="right contact-sidebar-right">
+			<div class="block">
+				<h4>barışcan akın</h4>
+				<p>
+					<b>lisans:</b> istanbul teknik üniversitesi (2008-...) <BR /> <b>iş:</b>
+					obss (2013-...)
+				</p>
+				<p></p>
+				<ul class="address-block">
+					<li class="phone">+90 212 553 6897</li>
+					<li class="mobile">+90 506 830 0133</li>
+					<li class="email"><a href="mailto:akinbar@itu.edu.tr">akinbar@itu.edu.tr</a></li>
+				</ul>
+
+			</div>
+		</aside>
+		<div class="clearfix"></div>
+	</div>
+</div>

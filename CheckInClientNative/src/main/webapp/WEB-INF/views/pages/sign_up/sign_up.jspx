@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:form="http://www.springframework.org/tags/form" version="2.0">
+
+	<sec:authorize access="isAnonymous()">
+		<div class="home-block">
+			<h2 class="home-block-heading">
+				<span>kaydol</span>
+			</h2>
+			<img src="${pageContext.request.contextPath}/resources/images/nero.jpg" alt="alt text" />
+			<form:form modelAttribute="userBaseForm" id="contactForm"
+				method="post" style="float: right;">
+				<fieldset>
+					<div>
+						<form:input path="name" name="name" id="name" type="text"
+							placeholder="ad" />
+					</div>
+					<div>
+						<form:input path="surname" name="surname" id="surname" type="text"
+							placeholder="soyad" />
+					</div>
+					<div>
+						<form:input path="email" name="email" id="email" type="text"
+							placeholder="e-posta" />
+					</div>
+					<div>
+						<form:input path="password" name="password" id="password"
+							type="password" placeholder="şifre" />
+					</div>
+					<div>
+						<form:input path="passwordRepeat" name="passwordRepeat"
+							id="passwordRepeat" type="password" placeholder="şifreyi onayla" />
+					</div>
+					<p>
+						<input type="submit" value="kaydol" name="submit" id="submit" />
+					</p>
+				</fieldset>
+
+			</form:form>
+		</div>
+
+		<script type="text/javascript">
+			$(document).ready(function() {
+				if ('${empty result}' === 'false') {
+					if ('${result}' === 'false') {
+						$('#myModal').modal('toggle');
+						$('.modal-body').html('${errorMessage}');
+					}
+				}
+
+				$('#contactForm input').tooltipster({
+					trigger : 'custom',
+					onlyOne : false,
+					position : 'right'
+				});
+				$('#contactForm').on('submit', function(event) {
+
+					var validator = $("#contactForm").validate({
+						rules : {
+							name : {
+								required : true,
+								minlength : 2,
+								maxlength : 255
+							},
+							surname : {
+								required : true,
+								minlength : 2,
+								maxlength : 255
+							},
+							email : {
+								required : true,
+								email : true,
+								minlength : 5,
+								maxlength : 255
+							},
+							password : {
+								required : true,
+								minlength : 3,
+								maxlength : 255
+							},
+							passwordRepeat : {
+								required : true,
+								minlength : 3,
+								maxlength : 255,
+								equalTo : "#password"
+							}
+						},
+						messages : {
+							name : {
+								required : "adınızı giriniz",
+								minlength : "ad kısa girildi",
+								maxlength : "ad uzun girildi"
+							},
+							surname : {
+								required : "soyadınızı giriniz",
+								minlength : "soyad kısa girildi",
+								maxlength : "soyad uzun girildi"
+							},
+							email : {
+								required : "e-posta adresinizi giriniz",
+								email : "e-posta formatı hatalı",
+								minlength : "e-posta kısa girildi",
+								maxlength : "e-posta uzun girildi"
+							},
+							password : {
+								required : "şifre girilmeli",
+								minlength : "şifre kısa girildi",
+								maxlength : "şifre uzun girildi"
+							},
+							passwordRepeat : {
+								required : "şifre tekrarı girilmeli",
+								minlength : "şifre tekrarı kısa girildi",
+								maxlength : "şifre tekrarı uzun girildi",
+								equalTo : "şifreler uyuşmalı"
+							}
+						},
+						errorPlacement : function(error, element) {
+							$(element).tooltipster('update', $(error).text());
+							$(element).tooltipster('show');
+						},
+						success : function(label, element) {
+							$(element).tooltipster('hide');
+						}
+					});
+					if (validator.form()) {
+						$('form#contactForm').attr({
+							action : '/client-web/kayit'
+						});
+						return true;
+					}
+					return false;
+				});
+			});
+		</script>
+	</sec:authorize>
+</div>

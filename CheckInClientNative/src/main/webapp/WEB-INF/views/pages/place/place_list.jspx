@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<sec:authorize access="isAuthenticated()">
+		<c:if test="${not empty placeList}">
+			<table id="box-table-a" style="width: 500px;">
+				<thead>
+					<tr>
+						<th scope="col">ad</th>
+						<th scope="col">açıklama</th>
+						<th scope="col">adres</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${placeList}" var="place">
+						<a href="javascript:void(0);">
+						<tr>
+
+							<td>${fn:length(place.name) > 20 ? fn:substring(place.name, 0, 20) : place.name}${fn:length(place.name) > 20 ? '...' : ''}</td>
+							<td>${fn:length(place.description) > 20 ? fn:substring(place.description, 0, 20) : place.description}${fn:length(place.description) > 20 ? '...' : ''}</td>
+							<td title="${place.addressText}">${fn:length(place.addressText) > 30 ? fn:substring(place.addressText, 0, 30) : place.addressText}${fn:length(place.addressText) > 30 ? '...' : ''}</td>
+							<td><a
+								href="${pageContext.request.contextPath}/hesabim/mekan/guncelle/${place.id}">güncelle</a></td>
+						</tr>
+						</a>
+					</c:forEach>
+				</tbody>
+			</table>
+		</c:if>
+	</sec:authorize>
+</div>

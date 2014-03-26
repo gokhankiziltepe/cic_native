@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags" version="2.0">
+	<sec:authorize access="isAuthenticated()">
+		<div class="wrapper clearfix">
+			<div id="posts-list">
+				<div class="home-block">
+					<div class="one-fourth-thumbs">
+						<h2 class="page-heading">
+							<span>hesabım</span>
+						</h2>
+						<figure>
+							<figcaption>
+								<strong>mekanlarınız için etkinlikler ekleyip, bunları
+									düzenleyebilirsiniz</strong> <a
+									href="${pageContext.request.contextPath}/hesabim/kisisel"
+									class="opener"></a>
+							</figcaption>
+
+							<a href="${pageContext.request.contextPath}/hesabim/kisisel"
+								class="thumb"><img
+								src="${pageContext.request.contextPath}/resources/images/icons/event.png"
+								class="center-align" alt="Alt text" /></a>
+						</figure>
+						<figure>
+							<figcaption>
+								<strong>kişisel bilgilerinizi düzenleyebilirsiniz</strong> <a
+									href="${pageContext.request.contextPath}/hesabim/kisisel"
+									class="opener"></a>
+							</figcaption>
+
+							<a href="${pageContext.request.contextPath}/hesabim/kisisel"
+								class="thumb"><img
+								src="${pageContext.request.contextPath}/resources/images/icons/personalinfo.png"
+								class="center-align" alt="Alt text" /></a>
+						</figure>
+
+						<figure>
+							<figcaption>
+								<strong>mekanlarınızla ilgili güncellemeler
+									yapabilirsiniz</strong><a href="javascript:void(0)"
+									onclick="$('#editPlaceButton').trigger('click');"
+									class="opener"></a>
+							</figcaption>
+
+							<a href="javascript:void(0)"
+								onclick="$('#editPlaceButton').trigger('click');" class="thumb"><img
+								src="${pageContext.request.contextPath}/resources/images/icons/place.png"
+								class="center-align" alt="Alt text" /></a>
+						</figure>
+					</div>
+				</div>
+			</div>
+			<aside id="sidebar">
+				<ul>
+					<li class="block">
+						<h4>kişisel bilgilerim</h4>
+						<ul>
+							<li class="cat-item"><a
+								href="${pageContext.request.contextPath}/hesabim/kisisel"
+								title="kisisel">düzenle</a></li>
+						</ul>
+					</li>
+					<li class="block">
+						<h4>mekanlarım</h4>
+						<ul>
+							<li class="cat-item"><a
+								href="${pageContext.request.contextPath}/hesabim/mekan/ekle"
+								title="mekan ekle">ekle</a></li>
+							<li class="cat-item"><a id="editPlaceButton"
+								href="javascript:void(0);" title="mekan düzenle">düzenle</a></li>
+						</ul>
+					</li>
+					<li class="block">
+						<h4>etkinliklerim</h4>
+						<ul>
+							<li class="cat-item"><a
+								href="${pageContext.request.contextPath}/hesabim/etkinlik/ekle"
+								title="View all posts">ekle</a></li>
+							<li class="cat-item"><a href="#" title="View all posts">düzenle</a></li>
+						</ul>
+					</li>
+				</ul>
+				<em id="corner"></em>
+			</aside>
+		</div>
+		<script type="text/javascript">
+			$(document)
+					.ready(
+							function() {
+								$('#editPlaceButton')
+										.on(
+												'click',
+												function(event) {
+													$
+															.ajax({
+																type : "GET",
+																url : '${pageContext.request.contextPath}/hesabim/mekan/sec',
+																dataType : "html",
+																beforeSend : function(
+																		jqXHR,
+																		settings) {
+																	$(
+																			"#loading-div")
+																			.show();
+																},
+																success : function(
+																		data,
+																		textStatus,
+																		jqXHR) {
+																	$(
+																			'.modal-title')
+																			.html(
+																					'mekanlarınız');
+																	$(
+																			'.modal-body')
+																			.html(
+																					$(data));
+																	$(
+																			'#myModal')
+																			.modal(
+																					'show');
+
+																},
+																error : function(
+																		jqXHR,
+																		textStatus,
+																		errorThrown) {
+																	$(
+																			'.modal-title')
+																			.html(
+																					'hata');
+																	$(
+																			'.modal-body')
+																			.html(
+																					jqXHR.responseText);
+																	$(
+																			'#myModal')
+																			.modal(
+																					'show');
+																},
+																complete : function(
+																		jqXHR,
+																		textStatus) {
+																	$(
+																			"#loading-div")
+																			.hide();
+																}
+															});
+												});
+							});
+		</script>
+	</sec:authorize>
+</div>

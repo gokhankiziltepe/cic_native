@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+	<definition name="default" template="/WEB-INF/views/template/default.jspx">
+		<put-attribute name="header" value="/WEB-INF/views/common/header.jspx" />
+		<put-attribute name="footer" value="/WEB-INF/views/common/footer.jspx" />
+	</definition>
+
+	<definition extends="default" name="home">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/home/content.jspx" />
+	</definition>
+
+	<definition extends="default" name="about_us">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/about_us/about_us.jspx" />
+	</definition>
+
+	<definition extends="default" name="error_404">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/error/error_404.jspx" />
+	</definition>
+	
+	<definition extends="default" name="error_custom">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/error/error_custom.jspx" />
+	</definition>
+
+	<definition extends="default" name="sign_up">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/sign_up/sign_up.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/my_account/my_account_home.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_edit_personal_info">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/my_account/my_account_edit_personal_info.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_edit_personal_info_contact">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/my_account/my_account_edit_personal_info_contact.jspx" />
+	</definition>
+
+	<definition extends="default"
+		name="my_account_edit_personal_info_contact_update">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/my_account/my_account_edit_personal_info_contact_update.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_edit_comment">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/my_account/my_account_edit_comment.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_edit_comment_update">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/my_account/my_account_edit_comment_update.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_place_add">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/place/place_add.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_place_update">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/place/place_update.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_place_update_contact">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/place/working_hour/place_update_contact.jspx" />
+	</definition>
+
+	<definition extends="default"
+		name="my_account_place_update_contact_execute">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/place/working_hour/place_update_contact_execute.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_place_feedback">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/place/feedback/place_feedback.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_place_photo">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/place/photo/place_photo.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_place_type">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/place/type/place_type.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_event_add">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/event/event_add.jspx" />
+	</definition>
+
+	<definition extends="default" name="my_account_event_update">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/event/event_update.jspx" />
+	</definition>
+	<definition extends="default" name="my_account_event_type">
+		<put-attribute name="content"
+			value="/WEB-INF/views/pages/event/type/event_type.jspx" />
+	</definition>
+</tiles-definitions>

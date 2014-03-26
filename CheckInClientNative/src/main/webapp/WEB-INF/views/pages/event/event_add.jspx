@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:joda="http://www.joda.org/joda/time/tags"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" version="2.0">
+	<sec:authorize access="isAuthenticated()">
+		<fmt:setLocale value="tr" scope="session" />
+		<div id="slider-holder">
+			<div id="posts-list" style="width: 600px;">
+				<h2 class="page-heading">
+					<span>yarattığınız etkinlikler</span>
+				</h2>
+				<c:if test="${not empty events}">
+					<table id="box-table-a" style="width: 600px;">
+						<thead>
+							<tr>
+								<th scope="col">ad</th>
+								<th scope="col">mekan adı</th>
+								<th scope="col">açıklama</th>
+								<th scope="col">başlangıç saati</th>
+								<th scope="col">bitiş saati</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach items="${events}" var="event">
+								<tr>
+									<td>${event.name}</td>
+									<td>${event.place.name}</td>
+									<td>${event.description}</td>
+									<td><fmt:formatDate value="${event.startTime}"
+											timeStyle="SHORT" type="BOTH" /></td>
+									<td><fmt:formatDate value="${event.endTime}"
+											timeStyle="SHORT" type="BOTH" /></td>
+									<td><a href="javascript:void(0);" class="deleteButton"
+										data-idvalue="${event.id}">sil</a></td>
+									<td><a
+										href="${pageContext.request.contextPath}/hesabim/etkinlik/guncelle/${event.id}">güncelle</a></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+					</table>
+				</c:if>
+			</div>
+			<div id="headline">
+				<h2 class="heading">mekan bilgileri</h2>
+				<form:form modelAttribute="eventForm" id="contactForm" method="post">
+					<fieldset>
+						<div>
+							<form:select path="placeId" id="placeId" cssStyle="width: 232px;">
+								<form:option value="">--mekan seçin--</form:option>
+								<c:forEach items="${places}" var="place">
+									<c:set var="itemText">${fn:length(place.name) > 20 ? 
+									fn:substring(place.name, 0, 20) : 
+									place.name}${fn:length(place.name) > 20 ? '...' : ''} | ${fn:length(place.addressText) > 20 ? 
+									fn:substring(place.addressText, 0, 20) : 
+									place.addressText}${fn:length(place.addressText) > 20 ? '...' : ''}</c:set>
+									<form:option value="${place.id}"
+										title="${place.name} | ${place.addressText}">
+										${itemText}
+									</form:option>
+								</c:forEach>
+							</form:select>
+						</div>
+						<div>
+							<form:input path="name" name="name" id="name"
+								cssStyle="margin-bottom:10px;" type="text"
+								placeholder="etkinlik adı" />
+						</div>
+						<div>
+							<form:textarea path="description" name="description"
+								id="description" type="textarea"
+								cssStyle="width:200px; height:100px; resize:none"
+								placeholder="etkinlik açıklaması" maxlength="1000" />
+						</div>
+						<div id="datetimepicker1" class="input-append date">
+							<form:input path="openingHour" name="openingHour"
+								data-format="dd/MM/yyyy hh:mm" id="openingHour" type="text"
+								placeholder="etkinlik başlangıcı" readonly="true" />
+							<span class="add-on"> <i data-time-icon="icon-time"
+								data-date-icon="icon-calendar"> </i></span>
+
+						</div>
+						<div id="datetimepicker2" class="input-append date">
+							<form:input path="closingHour" name="closingHour"
+								data-format="dd/MM/yyyy hh:mm" id="closingHour" type="text"
+								placeholder="etkinlik bitişi" readonly="true" />
+							<span class="add-on"> <i data-time-icon="icon-time"
+								data-date-icon="icon-calendar"> </i></span>
+						</div>
+						<p>
+							<input type="submit" value="kaydet" name="submit" id="submit"
+								style="float: left;" />
+						</p>
+					</fieldset>
+				</form:form>
+				<em id="corner"></em>
+			</div>
+		</div>
+		<script type="text/javascript">
+			$(function() {
+				$('#datetimepicker1').datetimepicker({
+					language : 'pt-BR'
+				});
+				$('#datetimepicker2').datetimepicker({
+					language : 'pt-BR'
+				});
+			});
+		</script>
+		<script type="text/javascript">
+			$(document)
+					.ready(
+							function() {
+
+								$('#contactForm input, textarea, select')
+										.tooltipster({
+											trigger : 'custom',
+											onlyOne : false,
+											position : 'right'
+										});
+								$.validator
+										.addMethod(
+												"dateTime",
+												function(value, element) {
+													var validTime = /^\d{2}[- \/.]\d{2}[- \/.]\d{4}\s*?\d{2}[- :.]\d{2}$/
+															.test(value);
+													return validTime;
+												}, "tarih formatı hatalı");
+								$('#contactForm')
+										.on(
+												'submit',
+												function(event) {
+													var validator = $(
+															"#contactForm")
+															.validate(
+																	{
+																		rules : {
+																			placeId : {
+																				required : true
+																			},
+																			name : {
+																				required : true,
+																				minlength : 2,
+																				maxlength : 100
+																			},
+																			description : {
+																				maxlength : 500
+																			},
+																			openingHour : {
+																				required : true,
+																				dateTime : true
+																			},
+																			closingHour : {
+																				required : true,
+																				dateTime : true
+																			}
+																		},
+																		messages : {
+																			placeId : {
+																				required : "mekan seçilmeli"
+																			},
+																			name : {
+																				required : "etkinlik adı girilmeli",
+																				minlength : "etkinlik adı kısa	girildi",
+																				maxlength : "etkinlik adı uzun	girildi"
+																			},
+																			description : {
+																				maxlength : "etkinlik açıklaması uzun girildi"
+																			},
+																			openingHour : {
+																				required : "etkinlik başlangıç saati belirtilmeli",
+																			},
+																			closingHour : {
+																				required : "etkinlik bitiş saati belirtilmeli",
+																			}
+																		},
+																		errorPlacement : function(
+																				error,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'update',
+																							$(
+																									error)
+																									.text());
+																			$(
+																					element)
+																					.tooltipster(
+																							'show');
+																		},
+																		success : function(
+																				label,
+																				element) {
+																			$(
+																					element)
+																					.tooltipster(
+																							'hide');
+																		}
+																	});
+													if (validator.form()) {
+														$('form#contactForm')
+																.attr(
+																		{
+																			action : '${pageContext.request.contextPath}/hesabim/etkinlik/ekle'
+																		});
+														return true;
+													}
+													return false;
+												});
+								$('.deleteButton')
+										.on(
+												'click',
+												function(event) {
+													var eventId = $(this)
+															.data('idvalue');
+													$
+															.ajax({
+																type : "POST",
+																url : '${pageContext.request.contextPath}/hesabim/etkinlik/sil',
+																data : {
+																	eventId : eventId
+																},
+																dataType : 'json',
+																beforeSend : function(
+																		jqXHR,
+																		settings) {
+																	$(
+																			"#loading-div")
+																			.show();
+																},
+																success : function(
+																		data,
+																		textStatus,
+																		jqXHR) {
+																	if (data.codeConstant === 'SUCCESS') {
+																		$(
+																				'.modal-title')
+																				.html(
+																						'');
+																		$(
+																				'.modal-body')
+																				.html(
+																						'etkinlik silindi');
+																		$(
+																				'#myModal')
+																				.modal(
+																						'show');
+																	} else {
+																		$(
+																				'.modal-title')
+																				.html(
+																						'hata');
+																		$(
+																				'.modal-body')
+																				.html(
+																						data.message);
+																		$(
+																				'#myModal')
+																				.modal(
+																						'show');
+
+																	}
+																},
+																error : function(
+																		jqXHR,
+																		textStatus,
+																		errorThrown) {
+																	$(
+																			'.modal-title')
+																			.html(
+																					'');
+																	$(
+																			'.modal-body')
+																			.html(
+																					textStatus);
+																	$(
+																			'#myModal')
+																			.modal(
+																					'show');
+																},
+																complete : function(
+																		jqXHR,
+																		textStatus) {
+																	$(
+																			"#loading-div")
+																			.hide();
+																	$(
+																			'#deleteModal')
+																			.modal(
+																					'hide');
+																	$(
+																			'#dismissButton')
+																			.on(
+																					'click',
+																					function(
+																							event) {
+																						window.location.reload(true);
+																					});
+																}
+															});
+												});
+
+							});
+		</script>
+	</sec:authorize>
+</div>
