@@ -83,10 +83,10 @@ public class CommentController extends AbstractController {
 				.findByUserBaseId(getCurrentUser(httpSession).getId());
 		List<Comment> placeComments = new ArrayList<Comment>();
 		for (Comment comment : comments.getResult()) {
-			if (placeService.exists(comment.getCommentedToEntityBase().getId())
-					.getResult()) {
-				placeComments.add(comment);
-			}
+//			if (placeService.exists(comment.getCommentedToEntityBase().getId())
+//					.getResult()) {
+//				placeComments.add(comment);
+//			}
 		}
 		return new GsonBuilder()
 				.setDateFormat("dd/MM/yyyy hh:mm")
@@ -105,10 +105,10 @@ public class CommentController extends AbstractController {
 				.findByUserBaseId(getCurrentUser(httpSession).getId());
 		List<Comment> photoComments = new ArrayList<Comment>();
 		for (Comment comment : comments.getResult()) {
-			if (photoService.exists(comment.getCommentedToEntityBase().getId())
-					.getResult()) {
-				photoComments.add(comment);
-			}
+//			if (photoService.exists(comment.getCommentedToEntityBase().getId())
+//					.getResult()) {
+//				photoComments.add(comment);
+//			}
 		}
 		return new GsonBuilder()
 				.setDateFormat("dd/MM/yyyy hh:mm")
