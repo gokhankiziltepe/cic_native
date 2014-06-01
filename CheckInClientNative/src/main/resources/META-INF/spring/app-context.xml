@@ -62,8 +62,14 @@
 			</props>
 		</property>
 	</bean>
+	
+<!-- 	<bean id="classifyStrategy" class="com.itu.checkin.recommendation.classifier.DecisionStumpClassifier"></bean> -->
+<!-- 	<bean id="classifyStrategy" class="com.itu.checkin.recommendation.classifier.LinearRegressionClassifier"></bean> -->
+	<bean id="classifyStrategy" class="com.itu.checkin.recommendation.classifier.M5PClassifier"></bean>
+<!-- 	<bean id="classifyStrategy" class="com.itu.checkin.recommendation.classifier.REPTreeClassifier"></bean> -->
+	
 
-	<bean id="headerFilter" class="com.itu.checkin.client.filter.HeaderFilter" />
+<!-- 	<bean id="headerFilter" class="com.itu.checkin.client.filter.HeaderFilter" /> -->
 	<context:annotation-config />
 
 	<bean id="validator"
